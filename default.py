@@ -210,6 +210,10 @@ def getLink(vid,vidname):
             u = a["entries"][0]["media$content"][0]["plfile$downloadUrl"]
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=u))
 
+            if (addon.getSetting('sub_enable') == "false"):
+               xbmc.sleep(5000)
+               xbmc.Player().disableSubtitles()
+
 
 
 # MAIN EVENT PROCESSING STARTS HERE
