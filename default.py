@@ -106,6 +106,7 @@ def getSources(fanart):
         html = getRequest('http://www.cbc.ca/player/')
         html = re.compile('<div id="catnav">(.+?)<div id="cliplist">').search(html).group(1)
         a = re.compile('<div class="menugroup">.+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
+#        a.append(('/sports-content/video/','Sports'))
         for url,name in a:
               if name.startswith('</') : name = __language__(30015)
               name = cleanname(name)
@@ -123,7 +124,7 @@ def getCats(gcurl):
         ilist = []
         url = taburl % (gcurl.replace(' ','+'))
         html = getRequest(url)
-        html = re.compile('<div id="catnav">(.+?)<div id="cliplist">').search(html).group(1)
+        html = re.compile('<div id="catnav">.+?<ul>(.+?)</ul>').search(html).group(1)
         a = re.compile('a href="(.+?)">(.+?)<').findall(html)
         for url,name in a:
               name = cleanname(name)
@@ -186,6 +187,7 @@ def getShows(gsurl,catname):
         for url,img,name,plot in cats:
            try:
               name = cleanname(name)
+              plot = cleanname(plot)
               mode = 'GL'
               u = '%s?url=%s&name=%s&mode=%s' % (sys.argv[0],qp(url), qp(name), mode)
               liz=xbmcgui.ListItem(name, '','DefaultFolder.png', img)
