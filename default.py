@@ -108,7 +108,7 @@ def getSources(fanart):
         a = re.compile('<div class="menugroup"><ul><li .+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
         b = re.compile('<div class="menugroup"><ul class.+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
         a.extend(b)
-        a.append(('/player/News/','News'))
+        a.append(('/player/News/',__language__(30019)))
         for url,name in a:
               if name.startswith('</') : name = __language__(30015)
               name = cleanname(name)
