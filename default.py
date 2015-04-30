@@ -108,7 +108,7 @@ def getSources(fanart):
         a = re.compile('<div class="menugroup"><ul><li .+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
         b = re.compile('<div class="menugroup"><ul class.+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
         a.extend(b)
-#        a.append(('/sports-content/video/','Sports'))
+        a.append(('/player/News/','News'))
         for url,name in a:
               if name.startswith('</') : name = __language__(30015)
               name = cleanname(name)
@@ -180,7 +180,12 @@ def getShows(gsurl,catname):
         ilist = []
         url = taburl % (gsurl.replace(' ','+'))
         html = getRequest(url)
-        html  = re.compile('<div class="clips">(.+?)<div class="spinner">').search(html).group(1)
+        try:
+           html  = re.compile('<div class="clips">(.+?)<div class="spinner">').search(html).group(1)
+        except:
+           xbmc.executebuiltin('XBMC.Notification("%s", "%s", %s)' % ( __addonname__, __language__(30011) , 5000) )
+           return
+
         if 'class="desc">' in html:
           cats  = re.compile('><a href="(.+?)"><img src="(.+?)" alt="(.+?)".+?class="desc">(.+?)<').findall(html)
         else:
@@ -223,7 +228,6 @@ def getLink(vid,vidname):
             url = 'http://feed.theplatform.com/f/h9dtGB/r3VD0FujBumK?form=json&fields=id%2Ctitle%2Cdescription%2CpubDate%2CdefaultThumbnailUrl%2Ckeywords%2Capproved%2C%3AadSite%2C%3AbackgroundImage%2C%3Ashow%2C%3ArelatedURL1%2C%3ArelatedURL2%2C%3ArelatedURL3%2C%3Asport%2C%3AseasonNumber%2C%3Atype%2C%3Asegment%2C%3Aevent%2C%3AadCategory%2C%3AliveOnDemand%2C%3AaudioVideo%2C%3AepisodeNumber%2C%3ArelatedClips%2C%3Agenre%2C%3AcommentsEnabled%2C%3AmetaDataURL%2C%3AisPLS%2C%3AradioLargeImage%2C%3AcontentArea%2C%3AsubEvent%2C%3AfeatureImage%2Cmedia%3Acontent%2Cmedia%3Akeywords&byContent=byReleases%3DbyId%253D'+vid+'&byApproved=true'
             html = getRequest(url)
             a = json.loads(html)
-            print "a="+str(a)
             u = a["entries"][0]["media$content"][0]["plfile$downloadUrl"]
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=u))
 
