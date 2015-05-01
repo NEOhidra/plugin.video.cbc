@@ -229,6 +229,12 @@ def getLink(vid,vidname):
             html = getRequest(url)
             a = json.loads(html)
             u = a["entries"][0]["media$content"][0]["plfile$downloadUrl"]
+            if u=='':
+              u = a["entries"][0]["media$content"][0]["plfile$releases"][0]["plrelease$url"]
+              u += '?mbr=true&manifest=m3u'
+              html = getRequest(u)
+              u = re.compile('<video src="(.+?)"').search(html).group(1)
+
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=u))
 
             if (addon.getSetting('sub_enable') == "false"):
