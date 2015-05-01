@@ -109,6 +109,9 @@ def getSources(fanart):
         b = re.compile('<div class="menugroup"><ul class.+?a href="(.+?)".+?>(.+?)<.+?</div').findall(html)
         a.extend(b)
         a.append(('/player/News/',__language__(30019)))
+        a.append(('/player/Sports/',__language__(30020)))
+        a.append(('/player/Digital+Archives/',__language__(30021)))
+
         for url,name in a:
               if name.startswith('</') : name = __language__(30015)
               name = cleanname(name)
@@ -126,7 +129,9 @@ def getCats(gcurl):
         ilist = []
         url = taburl % (gcurl.replace(' ','+'))
         html = getRequest(url)
-        html = re.compile('<div id="catnav">.+?<ul>(.+?)</ul>').search(html).group(1)
+#        html = re.compile('<div id="catnav">.+?<ul>(.+?)</ul>').search(html).group(1)
+
+        html = re.compile('<div id="catnav">(.+?)<div id=').search(html).group(1)
         a = re.compile('a href="(.+?)">(.+?)<').findall(html)
         for url,name in a:
               name = cleanname(name)

@@ -3,6 +3,7 @@ plugin.video.cbc
 
 Kodi Addon for CBC Video website
 
+Version 1.0.7 Added Sports and Digital Archives
 Version 1.0.6 Fix for Live Streams
 Version 1.0.5 Added News Category
 Version 1.0.4 Add Next page function
