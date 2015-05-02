@@ -240,6 +240,11 @@ def getLink(vid,vidname):
               html = getRequest(u)
               u = re.compile('<video src="(.+?)"').search(html).group(1)
 
+            if u.endswith('kbps.mp4'): 
+               if u.endswith('640x360_900kbps.mp4'): u=u.replace('640x360_900kbps','960x540_2500kbps')
+               else:
+                    cbr = re.compile('_([0-9]*)kbps\.mp4').search(u).group(1)
+                    u = u.replace('_%skbps' % cbr, '_2500kbps')
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=u))
 
             if (addon.getSetting('sub_enable') == "false"):
