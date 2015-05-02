@@ -249,8 +249,8 @@ def getLink(vid,vidname):
 
             if (addon.getSetting('sub_enable') == "false"):
                xbmc.sleep(5000)
-               xbmc.Player().disableSubtitles()
-
+#               xbmc.Player().disableSubtitles()
+               xbmc.Player().showSubtitles(False)
 
 
 # MAIN EVENT PROCESSING STARTS HERE
