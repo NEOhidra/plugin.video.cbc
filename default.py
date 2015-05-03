@@ -242,6 +242,7 @@ def getLink(vid,vidname):
 
             if u.endswith('.mp4'): 
                if '640x360_900kbps' in u:    u=u.replace('640x360_900kbps','960x540_2500kbps')
+               elif '640x360_1200kbps' in u: u=u.replace('640x360_1200kbps','960x540_2500kbps')
                elif '852x480_1800kbps' in u: u=u.replace('852x480_1800kbps','960x540_2500kbps')
                else:
                   if u.endswith('kbps.mp4'): 
