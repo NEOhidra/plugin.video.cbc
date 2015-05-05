@@ -182,6 +182,7 @@ def getQuery(cat_url):
 
 
 def getShows(gsurl,catname):
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
         ilist = []
         url = taburl % (gsurl.replace(' ','+'))
         html = getRequest(url)
