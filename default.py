@@ -91,9 +91,9 @@ def getSources(fanart):
         a = re.compile('<a href="(.+?)">(.+?)</a>', re.DOTALL).findall(html)
 #        b = re.compile('<div class="menugroup"><ul class.+?a href="(.+?)".+?>(.+?)<.+?</a>').findall(html)
 #        a.extend(b)
-        a.append(('/player/News/',__language__(30019)))
-        a.append(('/player/Sports/',__language__(30020)))
-        a.append(('/player/Digital+Archives/',__language__(30021)))
+        a.append(('http://www.cbc.ca/player/news',__language__(30019)))
+        a.append(('http://www.cbc.ca/player/Sports',__language__(30020)))
+#        a.append(('http://www.cbc.ca/player/Digital+Archives',__language__(30021)))
 
         for url,name in a:
               if name.startswith('</') : name = __language__(30015)
@@ -116,17 +116,33 @@ def getCats(gcurl):
         html = getRequest(url)
 #        html = re.compile('<div id="catnav">.+?<ul>(.+?)</ul>', re.DOTALL).search(html).group(1)
 
-        html = re.compile('<section class="category-subs full">(.+?)</section', re.DOTALL).search(html).group(1)
-        a = re.compile('a href="(.+?)">(.+?)<', re.DOTALL).findall(html)
+        try:    
+                html = re.compile('<section class="category-subs full">(.+?)</section', re.DOTALL).search(html).group(1)
+                a = re.compile('a href="(.+?)">(.+?)<', re.DOTALL).findall(html)
+                mode = 'GT'
+        except:
+           try:
+                html = re.compile('<section class="category-content full">(.+?)</section', re.DOTALL).search(html).group(1)
+                a = re.compile('a href="(.+?)" .+?="(.+?)"', re.DOTALL).findall(html)
+                mode = 'GL'
+           except:
+                html = re.compile('<section class="section-cats full">(.+?)</section', re.DOTALL).search(html).group(1)
+                a = re.compile('a href="(.+?)">(.+?)<', re.DOTALL).findall(html)
+                mode = 'GT'
+
+
         for url,name in a:
               name = cleanname(name)
               plot = name
-              mode = 'GT'
               u = '%s?url=%s&name=%s&mode=%s' % (sys.argv[0],qp(url), qp(name), mode)
               liz=xbmcgui.ListItem(name, '','DefaultFolder.png', icon)
               liz.setInfo( 'Video', { "Title": name, "Plot": plot })
               liz.setProperty('fanart_image', addonfanart)
-              ilist.append((u, liz, True))
+              if mode != 'GL': ilist.append((u, liz, True))
+              else:
+                 liz.setProperty('IsPlayable', 'true')
+                 ilist.append((u, liz, False))
+                   
         xbmcplugin.addDirectoryItems(int(sys.argv[1]), ilist, len(ilist))
 
 
@@ -134,7 +150,6 @@ def getTabs(gturl, gtname):
         ilist = []
         url = gturl.replace(' ','%20')
         html = getRequest(url)
-#        print "GT html = "+str(html)
         html  = re.compile('<section class="category-content full">(.+?)</section', re.DOTALL).search(html).group(1)
         if '<li class="active">' in html:
            getShows(gturl, gtname)
@@ -224,7 +239,7 @@ def getLink(vid,vidname):
             u = ''
             vwid = 0
             for b in a:
-               if b['width'] > vwid:
+               if b['width'] >= vwid:
                   u = b['url']
                   vwid = b['width']
 
@@ -232,7 +247,17 @@ def getLink(vid,vidname):
             html = getRequest(u, donotuseProxy=False)
             u = re.compile('<video src="(.+?)"', re.DOTALL).search(html).group(1)
             html = getRequest(u, donotuseProxy=False)
-            u = re.compile('mp4a.40.2"(.+?)#', re.DOTALL).search(html).group(1)
+            try:
+                urls = re.compile('BANDWIDTH=(.+?),.+?mp4a.40.2"(.+?)\n', re.DOTALL).findall(html)
+                x = 0
+                for (bw, v) in urls:
+                   if int(bw)> x:
+                     x = int(bw)
+                     yy = v
+       
+                u = yy.strip()  
+            except:
+                u = re.compile('mp4a.40.2"(.+?)#', re.DOTALL).search(html).group(1)
             u = u.strip()
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=u))
 
